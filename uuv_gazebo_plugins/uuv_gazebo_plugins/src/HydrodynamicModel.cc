@@ -417,7 +417,8 @@ void HMFossen::ApplyHydrodynamicForces(
   Eigen::Vector6d added = -this->GetAddedMass() * this->filteredAcc;
 
   // Added Coriolis term
-  Eigen::Vector6d cor = -this->Ca * velRel;
+  // Eigen::Vector6d cor = -this->Ca * velRel;
+  Eigen::Vector6d cor = Eigen::Vector6d::Zero();
 
   // All additional (compared to standard rigid body) Fossen terms combined.
   Eigen::Vector6d tau = damping + added + cor;

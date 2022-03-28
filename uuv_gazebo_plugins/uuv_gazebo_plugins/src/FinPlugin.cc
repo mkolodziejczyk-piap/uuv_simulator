@@ -87,6 +87,9 @@ void FinPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
   this->joint = _model->GetJoint(joint_name);
   GZ_ASSERT(this->joint, "joint is invalid");
 
+  // this->angle = 0.0;
+  // this->joint->SetPosition(0, this->angle);
+
   // Dynamic model
   GZ_ASSERT(_sdf->HasElement("dynamics"), "Could not find dynamics.");
   this->dynamics.reset(DynamicsFactory::GetInstance().CreateDynamics(
@@ -167,6 +170,7 @@ void FinPlugin::OnUpdate(const common::UpdateInfo &_info)
 #endif  
   
   ignition::math::Vector3d ldNormalI = finPose.Rot().RotateVector(
+    // ignition::math::Vector3d::UnitY);
     ignition::math::Vector3d::UnitZ);
       
   ignition::math::Vector3d velI = linVel - this->currentVelocity;
@@ -174,13 +178,16 @@ void FinPlugin::OnUpdate(const common::UpdateInfo &_info)
   ignition::math::Vector3d velInLDPlaneL = finPose.Rot().RotateVectorReverse(velInLDPlaneI);
 
   // Compute lift and drag forces:
-  this->finForce = this->liftdrag->compute(velInLDPlaneL);
+  // this->finForce = this->liftdrag->compute(velInLDPlaneL);
+  this->finForce = ignition::math::Vector3d::Zero;
 
-  this->link->AddRelativeForce(this->finForce);
+  // this->link->AddRelativeForce(this->finForce);
   // Apply forces at cg (with torques for position shift).
 
   // Apply new fin angle. Do this last since this sets link's velocity to zero.
-  this->joint->SetPosition(0, this->angle);
+  // this->angle = 0.0;
+  // this->joint->SetPosition(0, this->angle);
+  this->joint->SetPosition(0, this->angle, true);
 
   this->angleStamp = _info.simTime;
 }

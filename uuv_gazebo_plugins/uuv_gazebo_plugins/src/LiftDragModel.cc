@@ -111,7 +111,8 @@ ignition::math::Vector3d LiftDragQuadratic::compute(
   const ignition::math::Vector3d &_velL)
 {
   ignition::math::Vector3d velL = _velL;
-  double angle = atan2(_velL.Y(), _velL.X());
+  // double angle = atan2(_velL.Y(), _velL.X());
+  double angle = atan2(_velL.Z(), _velL.X());
 
   if (angle > M_PI_2)
   {
@@ -132,10 +133,11 @@ ignition::math::Vector3d LiftDragQuadratic::compute(
   double lift = du2 * this->liftConstant;
 
   ignition::math::Vector3d liftDirectionL =
-    -ignition::math::Vector3d::UnitZ.Cross(_velL).Normalize();
+    -ignition::math::Vector3d::UnitY.Cross(_velL).Normalize();
   ignition::math::Vector3d dragDirectionL = -_velL;
 
   return lift*liftDirectionL + drag*dragDirectionL.Normalize();
+  // return ignition::math::Vector3d::Zero;
 }
 
 /////////////////////////////////////////////////

@@ -14,7 +14,8 @@
 # limitations under the License.
 
 import numpy as np
-from scipy.misc import factorial
+# from scipy.misc import factorial
+from scipy.special import factorial
 
 
 class BezierCurve(object):

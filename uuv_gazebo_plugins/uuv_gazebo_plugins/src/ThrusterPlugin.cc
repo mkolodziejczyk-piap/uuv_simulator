@@ -243,7 +243,9 @@ void ThrusterPlugin::Update(const common::UpdateInfo &_info)
   if (this->joint)
   {
     // Let joint rotate with correct angular velocity.
-    this->joint->SetVelocity(0, dynamicState);
+    // this->joint->SetVelocity(0, dynamicState);
+    // this->joint->SetParam("fmax", 0, 100.0); //TODO set in Load()
+    // this->joint->SetParam("vel", 0, dynamicState);
   }
 
   // Publish thrust:
