@@ -110,10 +110,11 @@ class FinnedUUVControllerNode:
 
         try:
             thrusts = []
+            thrust_axis_scaling = 0.25
             for i in range(2):
                 thrusts += [max(0, msg.axes[self._joy_axis['axis_thruster']] \
-                    - max(0, (1 - i) * msg.axes[self._joy_axis['axis_yaw']]) \
-                    - max(0, -i * msg.axes[self._joy_axis['axis_yaw']]) \
+                    - thrust_axis_scaling * max(0, (1 - i) * msg.axes[self._joy_axis['axis_yaw']]) \
+                    - thrust_axis_scaling * max(0, -i * msg.axes[self._joy_axis['axis_yaw']]) \
                     ) * \
                     self._thruster_params['max_thrust'] * \
                     self._thruster_joy_gain]
