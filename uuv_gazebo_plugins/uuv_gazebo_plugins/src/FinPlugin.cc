@@ -178,10 +178,10 @@ void FinPlugin::OnUpdate(const common::UpdateInfo &_info)
   ignition::math::Vector3d velInLDPlaneL = finPose.Rot().RotateVectorReverse(velInLDPlaneI);
 
   // Compute lift and drag forces:
-  // this->finForce = this->liftdrag->compute(velInLDPlaneL);
-  this->finForce = ignition::math::Vector3d::Zero;
+  this->finForce = this->liftdrag->compute(velInLDPlaneL);
+  // this->finForce = ignition::math::Vector3d::Zero;
 
-  // this->link->AddRelativeForce(this->finForce);
+  this->link->AddRelativeForce(this->finForce);
   // Apply forces at cg (with torques for position shift).
 
   // Apply new fin angle. Do this last since this sets link's velocity to zero.
