@@ -208,9 +208,13 @@
             <path>/tmp/camera</path>
           </save>
         </camera>
-	    <plugin filename="libimage_sonar_ros_plugin.so" name="forward_sonar${suffix}_controller">
-		  <topicName>${topic}</topicName>
+        <plugin filename="libimage_sonar_ros_plugin.so" name="forward_sonar${suffix}_controller">
+          <topicName>${topic}</topicName>
           <frameName>forward_sonar${suffix}_optical_frame</frameName>
+          <clip>
+            <near>0.1</near>
+            <far>17</far>
+          </clip>          
         </plugin>
         <always_on>true</always_on>
 	    <update_rate>${update_rate}</update_rate>

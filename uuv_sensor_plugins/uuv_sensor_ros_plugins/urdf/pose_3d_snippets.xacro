@@ -71,7 +71,7 @@
       namespace="${namespace}"
       parent_link="${parent_link}"
       topic="pose_gt"
-      update_rate="20"
+      update_rate="100"
       noise_sigma="0.0"
       noise_amplitude="0.0"
       suffix="default"

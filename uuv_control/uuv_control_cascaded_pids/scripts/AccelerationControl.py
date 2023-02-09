@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Copyright (c) 2016 The UUV Simulator Authors.
 # All rights reserved.
 #
@@ -22,6 +22,9 @@ from geometry_msgs.msg import Accel
 from geometry_msgs.msg import Wrench
 from rospy.numpy_msg import numpy_msg
 
+from nav_msgs.msg import Odometry
+from uuv_auv_control_allocator.msg import AUVCommand
+
 class AccelerationControllerNode:
     def __init__(self):
         print('AccelerationControllerNode: initializing node')
@@ -31,6 +34,8 @@ class AccelerationControllerNode:
         self.inertial_tensor = numpy.identity(3)
         self.mass_inertial_matrix = numpy.zeros((6, 6))
 
+        self.odom_msg = Odometry()
+
         # ROS infrastructure
         self.sub_accel = rospy.Subscriber(
           'cmd_accel', numpy_msg(Accel), self.accel_callback)
@@ -38,6 +43,9 @@ class AccelerationControllerNode:
           'cmd_force', numpy_msg(Accel), self.force_callback)
         self.pub_gen_force = rospy.Publisher(
           'thruster_manager/input', Wrench, queue_size=1)
+        self.sub_odometry = rospy.Subscriber('pose_gt', numpy_msg(Odometry), self.odometry_callback)
+        self.pub_auv_cmd = rospy.Publisher(
+          'control_allocation/control_input', AUVCommand, queue_size=1)          
 
         if not rospy.has_param("pid/mass"):
             raise rospy.ROSException("UUV's mass was not provided")
@@ -104,6 +112,17 @@ class AccelerationControllerNode:
         force_msg.torque.z = force_torque[5]
 
         self.pub_gen_force.publish(force_msg)
+
+        auv_cmd_msg = AUVCommand()
+        
+        # auv_cmd_msg.surge_speed = self.odom_msg.twist.twist.linear.x
+        auv_cmd_msg.surge_speed = 1.0
+        auv_cmd_msg.command = force_msg
+        self.pub_auv_cmd.publish(auv_cmd_msg)
+
+    def odometry_callback(self, msg):
+
+        self.odom_msg = msg
 
 if __name__ == '__main__':
     print('starting AccelerationControl.py')

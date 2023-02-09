@@ -334,22 +334,30 @@ void GazeboRosImageSonar::DepthInfoDisconnect()
 void GazeboRosImageSonar::OnNewDepthFrame(const float *_image,
     unsigned int _width, unsigned int _height, unsigned int _depth,
     const std::string &_format)
-{
-  if (!this->initialized_ || this->height_ <=0 || this->width_ <=0)
+{  
+  gzerr << "OnNewDepthFrame" << std::endl;
+  gzerr << "point_cloud_connect_count_" << point_cloud_connect_count_ << " depth_image_connect_count_: " << depth_image_connect_count_  << std::endl;
+  
+  if (!this->initialized_ || this->height_ <=0 || this->width_ <=0) {
+    gzerr << "No processing: " << this->initialized_ << this->height_ << this->width_ << std::endl;
     return;
+  }
 
   this->depth_sensor_update_time_ = this->parentSensor->LastMeasurementTime();
 
   if (this->parentSensor->IsActive())
   {
+    gzerr << "IsActive" << std::endl;
     if (this->point_cloud_connect_count_ <= 0 &&
         this->depth_image_connect_count_ <= 0 &&
         (*this->image_connect_count_) <= 0)
     {
       this->parentSensor->SetActive(false);
+      gzerr << "SetActive(false)" << std::endl;
     }
     else
     {
+      gzerr << "process" << std::endl;
       if (this->point_cloud_connect_count_ > 0)
         this->FillPointdCloud(_image);
 
@@ -360,6 +368,7 @@ void GazeboRosImageSonar::OnNewDepthFrame(const float *_image,
   }
   else
   {
+    gzerr << "SetActive"; 
     if (this->point_cloud_connect_count_ > 0 ||
         this->depth_image_connect_count_ <= 0)
       // do this first so there's chance for sensor to run 1 frame after activate

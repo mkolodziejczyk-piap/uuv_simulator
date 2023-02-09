@@ -96,13 +96,12 @@
       <!-- <xacro:box_inertial x="0" y="0" z="0" mass="1.0"> -->
         <origin xyz="0 0 0" rpy="0 0 0"/>
       </xacro:box_inertial>
-      <visual>
+      <!-- <visual>
         <origin rpy="0 0 0" xyz="0 0 0"/>
         <geometry>
-          <!-- <mesh filename="${mesh_filename}" scale="1 1 1"/> -->
           <mesh filename="${mesh_filename}" scale="0.5 0.5 0.5"/>
         </geometry>
-      </visual>
+      </visual> -->
       <collision>
         <!-- todo: gazebo needs a collision volume or it will ignore the pose of
            the joint that leads to this link (and assume it to be the identity) -->

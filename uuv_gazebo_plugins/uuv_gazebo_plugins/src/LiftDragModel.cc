@@ -111,13 +111,13 @@ ignition::math::Vector3d LiftDragQuadratic::compute(
   const ignition::math::Vector3d &_velL)
 {
   ignition::math::Vector3d velL = _velL;  
-  // double angle = atan2(_velL.Y(), _velL.X());
-  double angle = atan2(_velL.Z(), _velL.X());
+  double angle = atan2(_velL.Y(), _velL.X());
+  // double angle = atan2(_velL.Z(), _velL.X());
 
   // velL = (vx, 0, vz) - projection on LD plane in Local Frame
   
-  // gzmsg << "velL" << velL << std::endl;
-  // gzmsg << "angle" << angle << std::endl;
+  // std::cout << "velL" << velL << std::endl;
+  // std::cout << "angle" << angle << std::endl;
 
   if (angle > M_PI_2)
   {
@@ -138,14 +138,15 @@ ignition::math::Vector3d LiftDragQuadratic::compute(
   double lift = du2 * this->liftConstant;
 
   ignition::math::Vector3d liftDirectionL =
-    -ignition::math::Vector3d::UnitY.Cross(_velL).Normalize();
+    -ignition::math::Vector3d::UnitZ.Cross(_velL).Normalize();
+    // -ignition::math::Vector3d::UnitY.Cross(_velL).Normalize();
   ignition::math::Vector3d dragDirectionL = -_velL;
 
-  // gzmsg << "lift" << lift << std::endl;
-  // gzmsg << "liftDirectionL" << liftDirectionL << std::endl;
+  // std::cout << "lift" << lift << std::endl;
+  // std::cout << "liftDirectionL" << liftDirectionL << std::endl;
 
-  // gzmsg << "drag" << drag << std::endl;
-  // gzmsg << "dragDirectionL" << dragDirectionL.Normalize() << std::endl;
+  // std::cout << "drag" << drag << std::endl;
+  // std::cout << "dragDirectionL" << dragDirectionL.Normalize() << std::endl;
 
   return lift*liftDirectionL + drag*dragDirectionL.Normalize();
   // return lift*liftDirectionL;

@@ -95,8 +95,20 @@ void PoseGTROSPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 /////////////////////////////////////////////////
 bool PoseGTROSPlugin::OnUpdate(const common::UpdateInfo& _info)
 {
-  if (!this->EnableMeasurement(_info))
+  // std::cout << "OnUpdate" << std::endl;
+  if (!this->EnableMeasurement(_info)) {
+    // common::Time current_time  = _info.simTime;
+    // double dt = (current_time - this->lastMeasurementTime).Double();
+    
+    // std::cout << (dt >= 1.0 / this->updateRate) << std::endl;
+    // std::cout << (this->isReferenceInit) << std::endl;
+    // std::cout << (this->isOn.data) << std::endl;
+    // std::cout << "!this->EnableMeasurement(_info)" << std::endl;
+
     return false;
+  }
+
+  // std::cout << "OnUpdate 2" << std::endl;
 
     // Read the current simulation time
 #if GAZEBO_MAJOR_VERSION >= 8
@@ -109,6 +121,8 @@ bool PoseGTROSPlugin::OnUpdate(const common::UpdateInfo& _info)
 
   if (dt <= 0)
     return false;
+
+  // std::cout << "OnUpdate 3" << std::endl;
 
   ignition::math::Pose3d linkPose, refLinkPose;
   ignition::math::Vector3d refLinVel, refAngVel;

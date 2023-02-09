@@ -170,12 +170,18 @@ void FinPlugin::OnUpdate(const common::UpdateInfo &_info)
 #endif  
   
   ignition::math::Vector3d ldNormalI = finPose.Rot().RotateVector(
-    ignition::math::Vector3d::UnitY);
-    // ignition::math::Vector3d::UnitZ);
+    // ignition::math::Vector3d::UnitY);
+    ignition::math::Vector3d::UnitZ);
       
   ignition::math::Vector3d velI = linVel - this->currentVelocity;
   ignition::math::Vector3d velInLDPlaneI = ldNormalI.Cross(velI.Cross(ldNormalI));
   ignition::math::Vector3d velInLDPlaneL = finPose.Rot().RotateVectorReverse(velInLDPlaneI);
+  
+  // std::cout << "finPose.Rot().Euler(): " << finPose.Rot().Euler() << std::endl;
+  // std::cout << "ldNormalI: " << ldNormalI << std::endl;
+  // std::cout << "velI: " << velI << std::endl;
+  // std::cout << "velInLDPlaneI: " << velInLDPlaneI << std::endl;
+  // std::cout << "velInLDPlaneL: " << velInLDPlaneL << std::endl;
 
   // Compute lift and drag forces:
   this->finForce = this->liftdrag->compute(velInLDPlaneL);

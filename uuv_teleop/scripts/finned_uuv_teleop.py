@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Copyright (c) 2016 The UUV Simulator Authors.
 # All rights reserved.
 #
@@ -34,7 +34,7 @@ class FinnedUUVControllerNode:
         # Test if any of the needed parameters are missing
         param_labels = ['n_fins', 'gain_roll', 'gain_pitch', 'gain_yaw',
                         'thruster_model', 'fin_topic_prefix',
-                        'fin_topic_suffix', 'thruster_topic_prefix', 'thruster_topic_suffix',
+                        'fin_topic_suffix', 'thruster_topic',
                         'axis_thruster', 'axis_roll', 'axis_pitch', 'axis_yaw']
 
         for label in param_labels:
@@ -58,7 +58,7 @@ class FinnedUUVControllerNode:
         if len(gain_roll) != self._n_fins or len(gain_pitch) != self._n_fins \
             or len(gain_yaw) != self._n_fins:
             raise rospy.ROSException('Input gain vectors must have length '
-                                     'equal to the number of fins: %s, %s, %s, %s' % (len(gain_roll), len(gain_pitch), len(gain_yaw), self._n_fins))
+                                     'equal to the number of fins')
 
         # Create the command angle to fin angle mapping
         self._rpy_to_fins = numpy.vstack((gain_roll, gain_pitch, gain_yaw)).T
@@ -80,19 +80,14 @@ class FinnedUUVControllerNode:
 
         # Create the thruster model object
         try:
-            # self._thruster_topic = rospy.get_param('~thruster_topic')
-            self._thruster_topic_prefix = rospy.get_param('~thruster_topic_prefix')
-            self._thruster_topic_suffix = rospy.get_param('~thruster_topic_suffix')
+            self._thruster_topic = rospy.get_param('~thruster_topic')
             self._thruster_params = rospy.get_param('~thruster_model')
             if 'max_thrust' not in self._thruster_params:
                 raise rospy.ROSException('No limit to thruster output was given')
-            self._thruster_models = []
-            for i in range(2):
-                topic = self._thruster_topic_prefix + str(i) + self._thruster_topic_suffix
-                self._thruster_models += [Thruster.create_thruster(
-                            self._thruster_params['name'], i,
-                            topic, None, None,
-                            **self._thruster_params['params'])]
+            self._thruster_model = Thruster.create_thruster(
+                        self._thruster_params['name'], 0,
+                        self._thruster_topic, None, None,
+                        **self._thruster_params['params'])
         except:
             raise rospy.ROSException('Thruster model could not be initialized')
 
@@ -109,38 +104,26 @@ class FinnedUUVControllerNode:
             return
 
         try:
-            thrusts = []
-            thrust_axis_scaling = 0.25
-            for i in range(2):
-                thrusts += [0.5 * max(0, msg.axes[self._joy_axis['axis_thruster']] \
-                    - thrust_axis_scaling * max(0, (1 - i) * msg.axes[self._joy_axis['axis_yaw']]) \
-                    - thrust_axis_scaling * max(0, -i * msg.axes[self._joy_axis['axis_yaw']]) \
-                    ) * \
-                    self._thruster_params['max_thrust'] * \
-                    self._thruster_joy_gain]
+            thrust = max(0, msg.axes[self._joy_axis['axis_thruster']]) * \
+                self._thruster_params['max_thrust'] * \
+                self._thruster_joy_gain
 
-            # cmd_roll = msg.axes[self._joy_axis['axis_roll']]
-            # if abs(cmd_roll) < 0.2:
-            #     cmd_roll = 0.0
-            cmd_roll = 0.0
+            cmd_roll = msg.axes[self._joy_axis['axis_roll']]
+            if abs(cmd_roll) < 0.2:
+                cmd_roll = 0.0
 
             cmd_pitch = msg.axes[self._joy_axis['axis_pitch']]
             if abs(cmd_pitch) < 0.2:
                 cmd_pitch = 0.0
 
-            # cmd_yaw = msg.axes[self._joy_axis['axis_yaw']]
-            # if abs(cmd_yaw) < 0.2:
-            #     cmd_yaw = 0.0
-            cmd_yaw = 0.0
+            cmd_yaw = msg.axes[self._joy_axis['axis_yaw']]
+            if abs(cmd_yaw) < 0.2:
+                cmd_yaw = 0.0
 
             rpy = numpy.array([cmd_roll, cmd_pitch, cmd_yaw])
             fins = self._rpy_to_fins.dot(rpy)
 
-            # thrusts[0] = 0.0 # -100.0
-            # thrusts[1] = -50.0 #-100.0
-            
-            for i in range(2):
-                self._thruster_models[i].publish_command(thrusts[i])
+            self._thruster_model.publish_command(thrust)
 
             for i in range(self._n_fins):
                 cmd = FloatStamped()

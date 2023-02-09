@@ -151,6 +151,10 @@
           <depthImageCameraInfoTopicName>${topic}_depth_info</depthImageCameraInfoTopicName>
           <pointCloudCutoff>10.0</pointCloudCutoff>
         </plugin>
+        <!-- <plugin name="GstCameraPlugin" filename="libgazebo_gst_camera_plugin.so">
+          <robotNamespace>"${namespace}"</robotNamespace>
+          <udpPort>5600</udpPort>
+        </plugin> -->
       </sensor>
     </gazebo>
   </xacro:macro>

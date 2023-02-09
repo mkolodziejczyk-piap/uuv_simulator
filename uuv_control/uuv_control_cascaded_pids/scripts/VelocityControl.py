@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Copyright (c) 2016 The UUV Simulator Authors.
 # All rights reserved.
 #
@@ -79,6 +79,10 @@ class VelocityControllerNode:
         t = msg.header.stamp.to_sec()
         e_v_linear = (self.v_linear_des - v_linear)
         e_v_angular = (self.v_angular_des - v_angular)
+        
+        # print(f"self.config: {self.config}")
+        print(f"e_v_linear: {e_v_linear}")
+        print(f"e_v_angular: {e_v_angular}")
 
         a_linear = self.pid_linear.regulate(e_v_linear, t)
         a_angular = self.pid_angular.regulate(e_v_angular, t)

@@ -41,6 +41,12 @@ void SubseaPressureROSPlugin::Load(physics::ModelPtr _model,
     this->rosNode->advertise<sensor_msgs::FluidPressure>(
       this->sensorOutputTopic, 1);
 
+  if (this->estimateDepth) {
+    this->rosDepthOutputPub =
+      this->rosNode->advertise<geometry_msgs::PoseWithCovarianceStamped>(
+          "depth", 1);
+  }
+
   if (this->gazeboMsgEnabled)
   {
     this->gazeboSensorOutputPub =
@@ -107,6 +113,22 @@ bool SubseaPressureROSPlugin::OnUpdate(const common::UpdateInfo& _info)
   rosMsg.variance = this->noiseSigma * this->noiseSigma;
 
   this->rosSensorOutputPub.publish(rosMsg);
+
+  if (this->estimateDepth) {
+
+    geometry_msgs::PoseWithCovarianceStamped rosPoseMsg;
+
+    // rosPoseMsg.header.stamp.sec  = _info.simTime.sec;
+    // rosPoseMsg.header.stamp.nsec = _info.simTime.nsec;
+    // rosPoseMsg.header.frame_id = this->link->GetName();
+
+    rosPoseMsg.header = rosMsg.header;
+
+    rosPoseMsg.pose.pose.position.z = -inferredDepth;
+
+    this->rosDepthOutputPub.publish(rosPoseMsg);
+  }
+
 
   // Read the current simulation time
 #if GAZEBO_MAJOR_VERSION >= 8

@@ -27,12 +27,16 @@ class FinModel(object):
         self.rot = quaternion_matrix(quat)[0:3, 0:3]
 
         unit_z = self.rot[:, 2]
+        # unit_z = self.rot[:, 1]
         # Surge velocity wrt vehicle's body frame
         surge_vel = np.array([1, 0, 0])
         fin_surge_vel = surge_vel - np.dot(surge_vel, unit_z) / np.linalg.norm(unit_z)**2 * unit_z        
         # Compute the lift and drag vectors
         self.lift_vector = -1 * np.cross(unit_z, fin_surge_vel) / np.linalg.norm(np.cross(unit_z, fin_surge_vel))
-        self.drag_vector = -1 * surge_vel / np.linalg.norm(surge_vel)       
+        self.drag_vector = -1 * surge_vel / np.linalg.norm(surge_vel)
+
+        print(f"self.lift_vector: {self.lift_vector}")
+        print(f"self.drag_vector: {self.drag_vector}")     
 
         self.pub = rospy.Publisher(self.topic, FloatStamped, queue_size=3)
     
