@@ -95,10 +95,10 @@
     </joint>
 
     <link name="${namespace}/fin${fin_id}">
-      <xacro:no_inertial />
-      <!-- <xacro:box_inertial x="0" y="0" z="0" mass="0.001">
+      <!-- <xacro:no_inertial /> -->
+      <xacro:box_inertial x="0.01" y="0.01" z="0.01" mass="0.01">
         <origin xyz="0 0 0" rpy="0 0 0"/>
-      </xacro:box_inertial> -->
+      </xacro:box_inertial>
       <visual>
         <!-- <origin xyz="0 0 0" rpy="${3.14*fin_id} 0 0" /> -->
         <!-- <origin xyz="0 0 0" rpy="0 ${-3.14/2} ${3.14/2}" /> -->
@@ -110,6 +110,12 @@
           <mesh filename="${mesh_filename}" scale="${scale}"/>
         </geometry>
       </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="${visual_rpy}" />        
+        <geometry>
+          <mesh filename="${mesh_filename}" scale="${scale}"/>
+        </geometry>
+      </collision>
     </link>
 
     <gazebo>
