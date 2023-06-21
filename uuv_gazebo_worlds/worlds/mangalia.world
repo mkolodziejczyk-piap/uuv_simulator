@@ -114,6 +114,22 @@
 
     <plugin name="sc_interface" filename="libuuv_sc_ros_interface_plugin.so"/>
 
+    <plugin name="acoustic_comms_plugin" filename="libacoustic_comms_plugin.so">
+      <max_range>1000</max_range>
+      <speed_of_sound>1400</speed_of_sound>
+      <propagation_model>
+        <source_power>200</source_power>
+        <noise_level>150</noise_level>        
+        <spectral_efficiency>7</spectral_efficiency>
+        <seed>0</seed>
+      </propagation_model>
+      <broker>
+        <bind_service>/broker/bind</bind_service>
+        <unbind_service>/broker/unbind</unbind_service>
+        <messages_topic>/broker/msgs</messages_topic>
+      </broker>
+    </plugin>    
+
     <gui fullscreen='0'>
       <camera name='user_camera'>
         <pose frame=''>34.6042 32.2383 20 0 0.528384 1.41245</pose>
