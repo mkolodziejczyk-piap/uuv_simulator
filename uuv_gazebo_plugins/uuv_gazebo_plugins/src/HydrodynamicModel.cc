@@ -114,10 +114,14 @@ void HydrodynamicModel::ComputeAcc(Eigen::Vector6d _velRel, double _time,
   // Gazebo reports angular accelerations that are off by orders of magnitude.
   double dt = _time - lastTime;
 
-  if (dt <= 0.0 || this->lastVelRel(0) == 0.0)  // Extra caution to prevent division by zero
+  // gzmsg << "this->lastVelRel(0): " << this->lastVelRel(0) << std::endl;
+
+  if (dt <= 0.0) // || this->lastVelRel(0) == 0.0)  // Extra caution to prevent division by zero
     return;
 
   Eigen::Vector6d acc = (_velRel - this->lastVelRel) / dt;
+
+  // gzmsg << "acc: " << acc << std::endl;
 
   // TODO  We only have access to the acceleration of the previous simulation
   //       step. The added mass will induce a strong force/torque counteracting
@@ -415,6 +419,11 @@ void HMFossen::ApplyHydrodynamicForces(
 
   // Added-mass forces and torques
   Eigen::Vector6d added = -this->GetAddedMass() * this->filteredAcc;
+
+  // gzmsg << "this->GetAddedMass()" << this->GetAddedMass() << std::endl;
+  // gzmsg << "this->GetAddedMass()" << this->GetAddedMass() << std::endl;
+  // gzmsg << "this->filteredAcc" << this->filteredAcc << std::endl;
+  // gzmsg << "added" << added << std::endl;
 
   // Added Coriolis term
   // Eigen::Vector6d cor = -this->Ca * velRel;
