@@ -170,6 +170,7 @@ class ThrusterManager:
             rospy.loginfo(self.configuration_matrix)
             self.thrust = numpy.zeros(self.n_thrusters)
 
+        rospy.sleep(3)
         if not self.update_tam():
             raise rospy.ROSException('No thrusters found')
 
