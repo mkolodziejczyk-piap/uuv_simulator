@@ -111,9 +111,10 @@
         </geometry>
       </visual>
       <collision>
-        <origin xyz="0 0 0" rpy="${visual_rpy}" />        
+        <origin xyz="-0.2 0 ${0.3 * (fin_id-0.5)}" rpy="${visual_rpy}" />        
         <geometry>
-          <mesh filename="${mesh_filename}" scale="${scale}"/>
+          <!-- <mesh filename="${mesh_filename}" scale="${scale}"/> -->
+          <box size="0.2 0.2 0.025" />
         </geometry>
       </collision>
     </link>
